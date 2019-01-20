@@ -15,34 +15,44 @@ public class MovingAgent : MonoBehaviour
     private HitReaction m_hitReaction;
     public GameObject targetObject;
     protected Weapon m_weapon;
+    protected RagdollUtility m_ragdoll;
 
     public enum CharacterMainStates { Aim,Idle}
 
     protected CharacterMainStates m_characterState;
 
-	void Start ()
+    // Parameters - temp
+    float health = 5;
+    bool characterEnabled = true;
+
+    void Start ()
     {
         m_anim = this.GetComponent<Animator>();
         m_aimIK = this.GetComponent<AimIK>();
         m_recoil = this.GetComponent<Recoil>();
         m_hitReaction = this.GetComponentInChildren<HitReaction>();
+        m_ragdoll = this.GetComponent<RagdollUtility>();
 
-        if(targetObject == null)
+        if (targetObject == null)
         {
             targetObject = new GameObject();
         }
         m_weapon = GetComponentInChildren<Weapon>();
         m_aimIK.solver.target = targetObject.transform;
         m_weapon.setGunTarget(targetObject);
+        m_ragdoll.DisableRagdoll();
     }
 	
 	// Update is called once per frame
 	void FixedUpdate()
     {
-        setCharacterState(); //mouse right clicked or not , isAimed
-        updateShooting();
-        updateMovment();
-        m_weapon.updateWeapon();
+        if (characterEnabled)
+        {
+            setCharacterState();
+            updateShooting();
+            updateMovment();
+            m_weapon.updateWeapon();
+        }       
     }
 
     private void updateMovment()
@@ -70,12 +80,12 @@ public class MovingAgent : MonoBehaviour
                     this.transform.LookAt(getTurnPoint(), Vector3.up);
                 }
 
-                //Swtich between aim and idle state
+                //Swtich between aim and idle
                 m_anim.SetBool("aimed", true);
 
                 // Move Character
                 Vector3 moveDiection = getMovmentInput();
-                moveDiection = this.transform.InverseTransformDirection(moveDiection); //convert character move direction to world direction
+                moveDiection = this.transform.InverseTransformDirection(moveDiection);
                 m_anim.SetFloat("forward", -moveDiection.x);
                 m_anim.SetFloat("side", moveDiection.z);
 
@@ -170,10 +180,9 @@ public class MovingAgent : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0) && Input.GetMouseButton(1))
         {
-			//solver represent hand position, fire only when hand comes to aim. (0 -idle position, 1- fully targeted)
            if( m_aimIK.solver.IKPositionWeight >0.9)
             {
-                m_recoil.Fire(2); //character str value + recoil value
+                m_recoil.Fire(2);
 
                 if (Input.GetMouseButton(0))
                 {
@@ -188,6 +197,19 @@ public class MovingAgent : MonoBehaviour
                         if(movingAgnet != null)
                         {
                             movingAgnet.GetHitReaction().Hit(hit.collider, (hit.transform.position - this.transform.position) * 0.6f, hit.point);
+
+                            movingAgnet.setHealth(health--);
+
+                            if (movingAgnet.getHealth() <= 0)
+                            {
+                                movingAgnet.enableRagdoll();
+                                Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
+                                if (rb != null)
+                                {
+                                    rb.AddForce((hit.transform.position - this.transform.position) * 50, ForceMode.Impulse);
+                                    m_weapon.transform.parent = null;
+                                }
+                            }
                         }
                         // Use the HitReaction
 
@@ -220,5 +242,25 @@ public class MovingAgent : MonoBehaviour
     public virtual Vector3 getMovmentInput()
     {
         return new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+    }
+
+    // Temp Code 
+
+    public virtual float getHealth()
+    {
+        return health;
+    }
+
+    public virtual void setHealth(float health)
+    {
+        this.health = health;
+    }
+
+    public virtual void enableRagdoll()
+    {
+        m_ragdoll.EnableRagdoll();
+        m_anim.enabled = false;
+        m_aimIK.enabled = false;
+        characterEnabled = false;
     }
 }

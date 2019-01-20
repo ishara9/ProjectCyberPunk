@@ -16,7 +16,8 @@ namespace RootMotion.Demos {
 
 		void Update() {
 			// On left mouse button...
-			if (Input.GetMouseButtonDown(0)) {
+			if (Input.GetMouseButtonDown(0))
+            {
 				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 				// Raycast to find a ragdoll collider
