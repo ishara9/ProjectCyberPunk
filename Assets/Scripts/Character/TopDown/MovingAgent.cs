@@ -22,7 +22,7 @@ public class MovingAgent : MonoBehaviour
     protected CharacterMainStates m_characterState;
 
     // Parameters - temp
-    float health = 5;
+    float m_health = 5;
     bool characterEnabled = true;
 
     void Start ()
@@ -198,7 +198,7 @@ public class MovingAgent : MonoBehaviour
                         {
                             movingAgnet.GetHitReaction().Hit(hit.collider, (hit.transform.position - this.transform.position) * 0.6f, hit.point);
 
-                            movingAgnet.setHealth(health--);
+                            movingAgnet.setHealth(m_health--);
 
                             if (movingAgnet.getHealth() <= 0)
                             {
@@ -247,12 +247,12 @@ public class MovingAgent : MonoBehaviour
 
     public virtual float getHealth()
     {
-        return health;
+        return m_health;
     }
 
     public virtual void setHealth(float health)
     {
-        this.health = health;
+        this.m_health = health;
     }
 
     public virtual void enableRagdoll()
