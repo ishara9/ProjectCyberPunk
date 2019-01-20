@@ -187,7 +187,7 @@ public class MovingAgent : MonoBehaviour
 
                         if(movingAgnet != null)
                         {
-                            movingAgnet.GetHitReaction().Hit(hit.collider, (hit.transform.position - this.transform.position) * 10f, hit.point);
+                            movingAgnet.GetHitReaction().Hit(hit.collider, (hit.transform.position - this.transform.position) * 0.6f, hit.point);
                         }
                         // Use the HitReaction
 
