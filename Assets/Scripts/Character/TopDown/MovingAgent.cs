@@ -40,7 +40,7 @@ public class MovingAgent : MonoBehaviour
         m_weapon = GetComponentInChildren<Weapon>();
         m_aimIK.solver.target = targetObject.transform;
         m_weapon.setGunTarget(targetObject);
-        m_ragdoll.DisableRagdoll();
+        //m_ragdoll.DisableRagdoll();
     }
 	
 	// Update is called once per frame
@@ -206,8 +206,7 @@ public class MovingAgent : MonoBehaviour
                                 Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
                                 if (rb != null)
                                 {
-                                    rb.AddForce((hit.transform.position - this.transform.position) * 50, ForceMode.Impulse);
-                                    m_weapon.transform.parent = null;
+                                    rb.AddForce((hit.transform.position - this.transform.position) * 60, ForceMode.Impulse);
                                 }
                             }
                         }
@@ -259,8 +258,8 @@ public class MovingAgent : MonoBehaviour
     public virtual void enableRagdoll()
     {
         m_ragdoll.EnableRagdoll();
-        m_anim.enabled = false;
         m_aimIK.enabled = false;
         characterEnabled = false;
+        m_weapon.disarmWeapon();
     }
 }
