@@ -206,7 +206,9 @@ public class MovingAgent : MonoBehaviour
                                 Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
                                 if (rb != null)
                                 {
-                                    rb.AddForce((hit.transform.position - this.transform.position) * 60, ForceMode.Impulse);
+                                    Debug.Log(hit.transform.name);
+                                    rb.isKinematic = false;
+                                    rb.AddForce((hit.transform.position - this.transform.position) * 200, ForceMode.Impulse);
                                 }
                             }
                         }
