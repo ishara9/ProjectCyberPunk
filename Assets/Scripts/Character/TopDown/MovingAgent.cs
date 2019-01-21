@@ -16,8 +16,9 @@ public class MovingAgent : MonoBehaviour
     public GameObject targetObject;
     protected Weapon m_weapon;
     protected RagdollUtility m_ragdoll;
+    protected WeaponProp m_weaponProp;
 
-    public enum CharacterMainStates { Aim,Idle}
+    public enum CharacterMainStates { Aimed,Armed_not_Aimed,Idle}
 
     protected CharacterMainStates m_characterState;
 
@@ -40,6 +41,7 @@ public class MovingAgent : MonoBehaviour
         m_weapon = GetComponentInChildren<Weapon>();
         m_aimIK.solver.target = targetObject.transform;
         m_weapon.setGunTarget(targetObject);
+        m_weaponProp = this.GetComponentInChildren<WeaponProp>();
         //m_ragdoll.DisableRagdoll();
     }
 	
@@ -59,10 +61,10 @@ public class MovingAgent : MonoBehaviour
     {
         switch (m_characterState)
         {
-            case CharacterMainStates.Aim:
+            case CharacterMainStates.Aimed:
                 //Gun aim
                 targetObject.transform.position = getTargetPoint();
-                m_aimIK.solver.IKPositionWeight = Mathf.Lerp(m_aimIK.solver.IKPositionWeight, 1, Time.deltaTime * 4);
+                m_aimIK.solver.IKPositionWeight = Mathf.Lerp(m_aimIK.solver.IKPositionWeight, 1, Time.deltaTime *2.5f);
 
                 //Turn player
                 float angle = Vector3.Angle(getTargetDirection(), this.transform.forward);
@@ -90,6 +92,7 @@ public class MovingAgent : MonoBehaviour
                 m_anim.SetFloat("side", moveDiection.z);
 
                 break;
+            case CharacterMainStates.Armed_not_Aimed:
             case CharacterMainStates.Idle:
                 //Gun Aim
                 m_aimIK.solver.IKPositionWeight = Mathf.Lerp(m_aimIK.solver.IKPositionWeight, 0, Time.deltaTime * 10);
@@ -180,7 +183,7 @@ public class MovingAgent : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0) && Input.GetMouseButton(1))
         {
-           if( m_aimIK.solver.IKPositionWeight >0.9)
+           if( m_aimIK.solver.IKPositionWeight >0.3)
             {
                 m_recoil.Fire(2);
 
@@ -225,15 +228,36 @@ public class MovingAgent : MonoBehaviour
      */
     public virtual void setCharacterState()
     {
-        if (Input.GetMouseButton(1))
+        if(!m_characterState.Equals(CharacterMainStates.Idle))
         {
-            m_characterState = CharacterMainStates.Aim;
-            m_weapon.setAimed(true);
+            if (Input.GetMouseButton(1))
+            {
+                m_characterState = CharacterMainStates.Aimed;
+                m_weapon.setAimed(true);
+            }
+            else
+            {
+                m_characterState = CharacterMainStates.Armed_not_Aimed;
+                m_weapon.setAimed(false);
+            }
         }
-        else
+
+
+        if(Input.GetKeyDown(KeyCode.E))
         {
-            m_characterState = CharacterMainStates.Idle;
-            m_weapon.setAimed(false);
+            bool state = m_anim.GetBool("equip");
+            state = !state;
+            m_anim.SetBool("equip", state);
+
+            if(state)
+            {
+                m_characterState = CharacterMainStates.Armed_not_Aimed;
+            }
+            else
+            {
+                m_characterState = CharacterMainStates.Idle;
+            }
+
         }
     }
 
@@ -263,5 +287,17 @@ public class MovingAgent : MonoBehaviour
         m_aimIK.enabled = false;
         characterEnabled = false;
         m_weapon.disarmWeapon();
+    }
+
+    public virtual void Equip()
+    {
+        m_weapon.gameObject.SetActive(true);
+        m_weaponProp.setVisible(false);
+    }
+
+    public virtual void UnEquip()
+    {
+        m_weapon.gameObject.SetActive(false);
+        m_weaponProp.setVisible(true);
     }
 }

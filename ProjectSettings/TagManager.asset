@@ -10,6 +10,7 @@ TagManager:
   - Character 1
   - Character 2
   - ShowCursor
+  - WeaponProp
   layers:
   - Default
   - TransparentFX
