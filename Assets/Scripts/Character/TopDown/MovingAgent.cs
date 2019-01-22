@@ -20,7 +20,7 @@ public class MovingAgent : MonoBehaviour
 
     public enum CharacterMainStates { Aimed,Armed_not_Aimed,Idle}
 
-    protected CharacterMainStates m_characterState;
+    protected CharacterMainStates m_characterState = CharacterMainStates.Idle;
 
     // Parameters - temp
     float m_health = 5;
@@ -42,6 +42,7 @@ public class MovingAgent : MonoBehaviour
         m_aimIK.solver.target = targetObject.transform;
         m_weapon.setGunTarget(targetObject);
         m_weaponProp = this.GetComponentInChildren<WeaponProp>();
+        UnEquip();
         //m_ragdoll.DisableRagdoll();
     }
 	
@@ -90,6 +91,8 @@ public class MovingAgent : MonoBehaviour
                 moveDiection = this.transform.InverseTransformDirection(moveDiection);
                 m_anim.SetFloat("forward", -moveDiection.x);
                 m_anim.SetFloat("side", moveDiection.z);
+                Vector3 translateDirection = new Vector3(moveDiection.z, 0, -moveDiection.x);
+                this.transform.Translate(translateDirection / 15);
 
                 break;
             case CharacterMainStates.Armed_not_Aimed:
@@ -103,6 +106,18 @@ public class MovingAgent : MonoBehaviour
                     Vector3 moveDirection = new Vector3(getMovmentInput().z, 0, -getMovmentInput().x);
                     this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(moveDirection, Vector3.up), 5f * Time.deltaTime);
                     m_anim.SetFloat("forward", getMovmentInput().magnitude);
+
+                    float divider = 1;
+                    if(m_characterState.Equals(CharacterMainStates.Idle))
+                    {
+                        divider = 20;
+                    }
+                    else
+                    {
+                        divider = 15;
+                    }
+
+                    this.transform.Translate(Vector3.forward*getMovmentInput().magnitude/ divider);
                 }
 
                 //Swtich between aim and idle
