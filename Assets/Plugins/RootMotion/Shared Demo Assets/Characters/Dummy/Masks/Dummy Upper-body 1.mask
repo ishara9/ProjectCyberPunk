@@ -6,8 +6,8 @@ AvatarMask:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Dummy Upper-body
-  m_Mask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000100000001000000
+  m_Name: Dummy Upper-body 1
+  m_Mask: 00000000000000000100000000000000000000000100000001000000010000000100000000000000000000000100000001000000
   m_Elements:
   - m_Path: 
     m_Weight: 1
@@ -52,19 +52,19 @@ AvatarMask:
   - m_Path: Character_Robot_01
     m_Weight: 1
   - m_Path: Root
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Root/Hips
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Root/Hips/Spine_01
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Root/Hips/Spine_01/Spine_02
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Root/Hips/Spine_01/Spine_02/Spine_03
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Root/Hips/Spine_01/Spine_02/Spine_03/Clavicle_L
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Root/Hips/Spine_01/Spine_02/Spine_03/Clavicle_L/Shoulder_L
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Root/Hips/Spine_01/Spine_02/Spine_03/Clavicle_L/Shoulder_L/Elbow_L
     m_Weight: 1
   - m_Path: Root/Hips/Spine_01/Spine_02/Spine_03/Clavicle_L/Shoulder_L/Elbow_L/Hand_L
@@ -141,7 +141,7 @@ AvatarMask:
   - m_Path: Root/Hips/Spine_01/Spine_02/Spine_03/Neck/Head/Eyes
     m_Weight: 1
   - m_Path: Root/Hips/UpperLeg_L
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Root/Hips/UpperLeg_L/LowerLeg_L
     m_Weight: 1
   - m_Path: Root/Hips/UpperLeg_L/LowerLeg_L/Ankle_L
@@ -151,7 +151,7 @@ AvatarMask:
   - m_Path: Root/Hips/UpperLeg_L/LowerLeg_L/Ankle_L/Ball_L/Toes_L
     m_Weight: 1
   - m_Path: Root/Hips/UpperLeg_R
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Root/Hips/UpperLeg_R/LowerLeg_R
     m_Weight: 1
   - m_Path: Root/Hips/UpperLeg_R/LowerLeg_R/Ankle_R

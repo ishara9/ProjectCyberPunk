@@ -25,6 +25,8 @@ public class MovingAgent : MonoBehaviour
     // Parameters - temp
     float m_health = 5;
     bool characterEnabled = true;
+    private float movmentMultiplayer = 1;
+    private Vector3 movmentVector = Vector3.zero;
 
     void Start ()
     {
@@ -56,6 +58,12 @@ public class MovingAgent : MonoBehaviour
             updateMovment();
             m_weapon.updateWeapon();
         }       
+    }
+
+    private void OnAnimatorMove()
+    {
+      //Vector3 displacement =  m_anim.deltaPosition;
+       // movmentMultiplayer = displacement.magnitude;
     }
 
     private void updateMovment()
@@ -92,7 +100,7 @@ public class MovingAgent : MonoBehaviour
                 m_anim.SetFloat("forward", -moveDiection.x);
                 m_anim.SetFloat("side", moveDiection.z);
                 Vector3 translateDirection = new Vector3(moveDiection.z, 0, -moveDiection.x);
-                this.transform.Translate(translateDirection / 15);
+                this.transform.Translate(translateDirection.normalized*movmentMultiplayer / 15);
 
                 break;
             case CharacterMainStates.Armed_not_Aimed:
@@ -105,7 +113,7 @@ public class MovingAgent : MonoBehaviour
                 {
                     Vector3 moveDirection = new Vector3(getMovmentInput().z, 0, -getMovmentInput().x);
                     this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(moveDirection, Vector3.up), 5f * Time.deltaTime);
-                    m_anim.SetFloat("forward", getMovmentInput().magnitude);
+                    m_anim.SetFloat("forward", getMovmentInput().magnitude*movmentMultiplayer);
 
                     float divider = 1;
                     if(m_characterState.Equals(CharacterMainStates.Idle))
@@ -281,6 +289,7 @@ public class MovingAgent : MonoBehaviour
      */
     public virtual Vector3 getMovmentInput()
     {
+        movmentVector = Vector3.Lerp(movmentVector, new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")), 100 * Time.deltaTime);
         return new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
     }
 
