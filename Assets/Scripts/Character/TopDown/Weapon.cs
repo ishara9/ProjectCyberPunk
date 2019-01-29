@@ -6,11 +6,13 @@ public class Weapon : MonoBehaviour
 {
     public GameObject targetPoint;
     public GameObject target;
+    public GameObject projectile;
 
     public bool isAimed;
     private LineRenderer m_line;
     private Rigidbody m_rigidbody;
     private BoxCollider m_collider;
+    private string ownerName;
 
     public void Awake()
     {
@@ -33,8 +35,10 @@ public class Weapon : MonoBehaviour
     {
         if(isAimed)
         {
-            m_line.SetPosition(0, targetPoint.transform.position);
-            m_line.SetPosition(1, target.transform.position);
+            Vector3 direction = target.transform.position - targetPoint.transform.position;
+           // m_line.SetPosition(0, targetPoint.transform.position);
+           // m_line.SetPosition(1, targetPoint.transform.position + direction * 50);
+            
         }
     }
 
@@ -44,6 +48,22 @@ public class Weapon : MonoBehaviour
         m_rigidbody.isKinematic = false;
         m_rigidbody.useGravity = true;
         m_collider.isTrigger = false;
+    }
+
+    public void FireProjectile()
+    {
+        GameObject Tempprojectile = GameObject.Instantiate(projectile);
+        Tempprojectile.transform.parent = null;
+        Tempprojectile.transform.position =targetPoint.transform.position;
+        //Tempprojectile.transform.forward = targetPoint.transform.forward;
+        Tempprojectile.transform.forward =( target.transform.position - targetPoint.transform.position).normalized;
+        Tempprojectile.GetComponent<ProjectileBasic>().speed = 1f;
+        Tempprojectile.GetComponent<ProjectileBasic>().setShooterName(ownerName);
+    }
+
+    public void setOwner(string owner)
+    {
+        ownerName = owner;
     }
 
 }

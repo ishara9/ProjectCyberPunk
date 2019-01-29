@@ -4,16 +4,35 @@ using UnityEngine;
 
 public class AutoMovingAgent : MovingAgent
 {
+    GameObject player;
+    private float ShootingTIme;
+
+    public override void Start()
+    {
+        base.Start();
+        if(!isEquiped())
+        {
+            ToggleEquip();
+        }
+    }
     public override Vector3 getTargetPoint()
     {
-        Vector3 mouse = Input.mousePosition;
-        Ray castPoint = Camera.main.ScreenPointToRay(mouse);
-        RaycastHit hit;
-        if (Physics.Raycast(castPoint, out hit, Mathf.Infinity, floorHitLayerMask))
+        //Vector3 mouse = Input.mousePosition;
+        //Ray castPoint = Camera.main.ScreenPointToRay(mouse);
+        //RaycastHit hit;
+        //if (Physics.Raycast(castPoint, out hit, Mathf.Infinity, floorHitLayerMask))
+        //{
+        //    return hit.point;
+        //}
+
+        if(player == null)
         {
-            return hit.point;
+            player = GameObject.FindGameObjectWithTag("Player");
         }
-        return Vector3.zero;
+
+
+
+        return new Vector3(player.transform.position.x,player.transform.position.y + 1.5f,player.transform.position.z);
     }
 
     /*
@@ -56,6 +75,23 @@ public class AutoMovingAgent : MovingAgent
         //        m_recoil.Fire(2);
         //    }
         //}
+        ShootingTIme += Time.deltaTime;
+
+        if(ShootingTIme >Random.Range(1,3))
+        {
+            ShootingTIme = 0;
+
+            if(Random.value >0.5)
+            {
+                m_recoil.Fire(2);
+
+                if (m_weapon)
+                {
+                    m_weapon.FireProjectile();
+                }
+            }
+        }
+       
     }
 
     /*
@@ -63,7 +99,7 @@ public class AutoMovingAgent : MovingAgent
      */
     public override void setCharacterState()
     {
-        m_characterState = CharacterMainStates.Idle;
+        m_characterState = CharacterMainStates.Aimed;
     }
 
     /*

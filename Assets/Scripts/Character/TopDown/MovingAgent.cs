@@ -17,6 +17,7 @@ public class MovingAgent : MonoBehaviour
     protected Weapon m_weapon;
     protected RagdollUtility m_ragdoll;
     protected WeaponProp m_weaponProp;
+    protected bool crouched = false;
 
     public enum CharacterMainStates { Aimed,Armed_not_Aimed,Idle}
 
@@ -28,7 +29,7 @@ public class MovingAgent : MonoBehaviour
     private float movmentMultiplayer = 1;
     private Vector3 movmentVector = Vector3.zero;
 
-    void Start ()
+    public virtual void Start ()
     {
         m_anim = this.GetComponent<Animator>();
         m_aimIK = this.GetComponent<AimIK>();
@@ -44,7 +45,8 @@ public class MovingAgent : MonoBehaviour
         m_aimIK.solver.target = targetObject.transform;
         m_weapon.setGunTarget(targetObject);
         m_weaponProp = this.GetComponentInChildren<WeaponProp>();
-        UnEquip();
+        Equip();
+        m_weapon.setOwner(this.name);
         //m_ragdoll.DisableRagdoll();
     }
 	
@@ -53,11 +55,18 @@ public class MovingAgent : MonoBehaviour
     {
         if (characterEnabled)
         {
-            setCharacterState();
             updateShooting();
             updateMovment();
             m_weapon.updateWeapon();
         }       
+    }
+
+    private void Update()
+    {
+        if(characterEnabled)
+        {
+            setCharacterState();
+        }
     }
 
     private void OnAnimatorMove()
@@ -109,24 +118,26 @@ public class MovingAgent : MonoBehaviour
                 m_aimIK.solver.IKPositionWeight = Mathf.Lerp(m_aimIK.solver.IKPositionWeight, 0, Time.deltaTime * 10);
 
                 //Move character and turn
-                if(getMovmentInput().magnitude >0)
+                if (getMovmentInput().magnitude > 0)
                 {
                     Vector3 moveDirection = new Vector3(getMovmentInput().z, 0, -getMovmentInput().x);
                     this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(moveDirection, Vector3.up), 5f * Time.deltaTime);
-                    m_anim.SetFloat("forward", getMovmentInput().magnitude*movmentMultiplayer);
-
-                    float divider = 1;
-                    if(m_characterState.Equals(CharacterMainStates.Idle))
-                    {
-                        divider = 20;
-                    }
-                    else
-                    {
-                        divider = 15;
-                    }
-
-                    this.transform.Translate(Vector3.forward*getMovmentInput().magnitude/ divider);
                 }
+
+                m_anim.SetFloat("forward", getMovmentInput().magnitude*movmentMultiplayer);
+
+                float divider = 1;
+                if(m_characterState.Equals(CharacterMainStates.Idle))
+                {
+                    divider = 20;
+                }
+                else
+                {
+                    divider = 15;
+                }
+
+                this.transform.Translate(Vector3.forward*getMovmentInput().magnitude/ divider);
+                
 
                 //Swtich between aim and idle
                 m_anim.SetBool("aimed", false);
@@ -135,7 +146,7 @@ public class MovingAgent : MonoBehaviour
     }
 
     // Getters
-    HitReaction GetHitReaction()
+    public HitReaction GetHitReaction()
     {
         return m_hitReaction;
     }
@@ -210,38 +221,43 @@ public class MovingAgent : MonoBehaviour
             {
                 m_recoil.Fire(2);
 
-                if (Input.GetMouseButton(0))
+                if(m_weapon)
                 {
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                    // Raycast to find a ragdoll collider
-                    RaycastHit hit = new RaycastHit();
-                    if (Physics.Raycast(ray, out hit, 100f,enemyHitLayerMask))
-                    {
-                      MovingAgent movingAgnet= hit.transform.GetComponentInParent<MovingAgent>();
-
-                        if(movingAgnet != null)
-                        {
-                            movingAgnet.GetHitReaction().Hit(hit.collider, (hit.transform.position - this.transform.position) * 0.6f, hit.point);
-
-                            movingAgnet.setHealth(m_health--);
-
-                            if (movingAgnet.getHealth() <= 0)
-                            {
-                                movingAgnet.enableRagdoll();
-                                Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
-                                if (rb != null)
-                                {
-                                    Debug.Log(hit.transform.name);
-                                    rb.isKinematic = false;
-                                    rb.AddForce((hit.transform.position - this.transform.position) * 200, ForceMode.Impulse);
-                                }
-                            }
-                        }
-                        // Use the HitReaction
-
-                    }
+                    m_weapon.FireProjectile();
                 }
+
+                //if (Input.GetMouseButton(0))
+                //{
+                //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+                //    // Raycast to find a ragdoll collider
+                //    RaycastHit hit = new RaycastHit();
+                //    if (Physics.Raycast(ray, out hit, 100f,enemyHitLayerMask))
+                //    {
+                //      MovingAgent movingAgnet= hit.transform.GetComponentInParent<MovingAgent>();
+
+                //        if(movingAgnet != null)
+                //        {
+                //            movingAgnet.GetHitReaction().Hit(hit.collider, (hit.transform.position - this.transform.position) * 0.6f, hit.point);
+
+                //            movingAgnet.setHealth(m_health--);
+
+                //            if (movingAgnet.getHealth() <= 0)
+                //            {
+                //                movingAgnet.enableRagdoll();
+                //                Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
+                //                if (rb != null)
+                //                {
+                //                    Debug.Log(hit.transform.name);
+                //                    rb.isKinematic = false;
+                //                    rb.AddForce((hit.transform.position - this.transform.position) * 200, ForceMode.Impulse);
+                //                }
+                //            }
+                //        }
+                //        // Use the HitReaction
+
+                //    }
+                //}
             }
         }
     }
@@ -282,6 +298,13 @@ public class MovingAgent : MonoBehaviour
             }
 
         }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            bool crouched = m_anim.GetBool("crouched");
+            crouched = !crouched;
+            m_anim.SetBool("crouched", crouched);
+        }
     }
 
     /*
@@ -289,7 +312,6 @@ public class MovingAgent : MonoBehaviour
      */
     public virtual Vector3 getMovmentInput()
     {
-        movmentVector = Vector3.Lerp(movmentVector, new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")), 100 * Time.deltaTime);
         return new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
     }
 
@@ -323,5 +345,26 @@ public class MovingAgent : MonoBehaviour
     {
         m_weapon.gameObject.SetActive(false);
         m_weaponProp.setVisible(true);
+    }
+    
+    public virtual void ToggleEquip()
+    {
+        bool state = m_anim.GetBool("equip");
+        state = !state;
+        m_anim.SetBool("equip", state);
+
+        if (state)
+        {
+            m_characterState = CharacterMainStates.Armed_not_Aimed;
+        }
+        else
+        {
+            m_characterState = CharacterMainStates.Idle;
+        }
+    }
+
+    public bool isEquiped()
+    {
+        return m_anim.GetBool("equip"); 
     }
 }
