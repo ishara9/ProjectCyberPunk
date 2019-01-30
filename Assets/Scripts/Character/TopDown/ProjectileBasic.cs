@@ -43,21 +43,21 @@ public class ProjectileBasic : MonoBehaviour
             if( !shooterName.Equals(movingAgnet.name))
             {
                 hit = true;
-                movingAgnet.GetHitReaction().Hit(other, (this.transform.forward) * 3f, other.transform.position);
+                movingAgnet.GetHitReaction().Hit(other, (this.transform.forward) * 5f, other.transform.position);
 
                 float health = movingAgnet.getHealth();
                 health--;
                 movingAgnet.setHealth(health);
                 speed = 0;
                 Destroy(this.gameObject);
-
+                Debug.Log(other.transform.name);
                 if (movingAgnet.getHealth() <= 0)
                 {
                     movingAgnet.enableRagdoll();
                     Rigidbody rb = other.transform.GetComponent<Rigidbody>();
                     if (rb != null)
                     {
-                        Debug.Log(other.transform.name);
+                        
                         rb.isKinematic = false;
                         rb.AddForce((this.transform.forward) * 200, ForceMode.Impulse);
                     }

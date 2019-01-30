@@ -7,12 +7,14 @@ public class Weapon : MonoBehaviour
     public GameObject targetPoint;
     public GameObject target;
     public GameObject projectile;
+    public LayerMask hitLayerMask;
 
     public bool isAimed;
     private LineRenderer m_line;
     private Rigidbody m_rigidbody;
     private BoxCollider m_collider;
     private string ownerName;
+
 
     public void Awake()
     {
@@ -33,12 +35,26 @@ public class Weapon : MonoBehaviour
 
     public void updateWeapon()
     {
-        if(isAimed)
+        if (isAimed)
         {
             Vector3 direction = target.transform.position - targetPoint.transform.position;
-           // m_line.SetPosition(0, targetPoint.transform.position);
-           // m_line.SetPosition(1, targetPoint.transform.position + direction * 50);
-            
+            m_line.SetPosition(0, targetPoint.transform.position);
+
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            // Raycast to find a ragdoll collider
+            RaycastHit hit = new RaycastHit();
+
+            if (Physics.Raycast(targetPoint.transform.position, direction.normalized, out hit, 1000, hitLayerMask))
+            {
+                m_line.SetPosition(1, hit.point);
+            }
+            else
+            {
+                m_line.SetPosition(1, targetPoint.transform.position + direction * 50);
+            }
+
+            Debug.DrawRay(targetPoint.transform.position, direction.normalized, Color.red);
         }
     }
 
