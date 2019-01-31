@@ -58,7 +58,7 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    public void disarmWeapon()
+    public void dropWeapon()
     {
         this.transform.parent = null;
         m_rigidbody.isKinematic = false;

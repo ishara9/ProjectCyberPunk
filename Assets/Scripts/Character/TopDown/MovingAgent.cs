@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using RootMotion.FinalIK;
 
+
+[RequireComponent(typeof(EquipmentSystem))]
 public class MovingAgent : MonoBehaviour
 {
     public LayerMask floorHitLayerMask;
@@ -11,13 +13,14 @@ public class MovingAgent : MonoBehaviour
     // Use this for initialization
     Animator m_anim;
     protected AimIK m_aimIK;
-    protected Recoil m_recoil;
+   //rotected Recoil m_recoil;
     private HitReaction m_hitReaction;
     public GameObject targetObject;
-    protected Weapon m_weapon;
+    //protected Weapon m_weapon;
     protected RagdollUtility m_ragdoll;
-    protected WeaponProp m_weaponProp;
+    //protected WeaponProp m_weaponProp;
     protected bool crouched = false;
+    protected EquipmentSystem m_equipmentSystem;
 
     public enum CharacterMainStates { Aimed,Armed_not_Aimed,Idle}
 
@@ -26,28 +29,30 @@ public class MovingAgent : MonoBehaviour
     // Parameters - temp
     float m_health = 5;
     bool characterEnabled = true;
-    private float movmentMultiplayer = 1;
-    private Vector3 movmentVector = Vector3.zero;
 
-    public virtual void Start ()
+    public virtual void Awake ()
     {
         m_anim = this.GetComponent<Animator>();
         m_aimIK = this.GetComponent<AimIK>();
-        m_recoil = this.GetComponent<Recoil>();
+        //recoil = this.GetComponent<Recoil>();
         m_hitReaction = this.GetComponentInChildren<HitReaction>();
         m_ragdoll = this.GetComponent<RagdollUtility>();
+       // m_weaponProp = this.GetComponentInChildren<WeaponProp>();
+       // m_weapon = GetComponentInChildren<Weapon>();
+        m_equipmentSystem = this.GetComponent<EquipmentSystem>();
+    }
 
+    public virtual void Start()
+    {
         if (targetObject == null)
         {
             targetObject = new GameObject();
         }
-        m_weapon = GetComponentInChildren<Weapon>();
+
         m_aimIK.solver.target = targetObject.transform;
-        m_weapon.setGunTarget(targetObject);
-        m_weaponProp = this.GetComponentInChildren<WeaponProp>();
-        Equip();
-        m_weapon.setOwner(this.name);
-        //m_ragdoll.DisableRagdoll();
+
+        // Set Wepon target
+        m_equipmentSystem.setWeaponTarget(targetObject);
     }
 	
 	// Update is called once per frame
@@ -57,7 +62,7 @@ public class MovingAgent : MonoBehaviour
         {
             updateShooting();
             updateMovment();
-            m_weapon.updateWeapon();
+            m_equipmentSystem.UpdateSystem();
         }       
     }
 
@@ -67,12 +72,6 @@ public class MovingAgent : MonoBehaviour
         {
             setCharacterState();
         }
-    }
-
-    private void OnAnimatorMove()
-    {
-      //Vector3 displacement =  m_anim.deltaPosition;
-       // movmentMultiplayer = displacement.magnitude;
     }
 
     private void updateMovment()
@@ -109,7 +108,7 @@ public class MovingAgent : MonoBehaviour
                 m_anim.SetFloat("forward", -moveDiection.x);
                 m_anim.SetFloat("side", moveDiection.z);
                 Vector3 translateDirection = new Vector3(moveDiection.z, 0, -moveDiection.x);
-                this.transform.Translate(translateDirection.normalized*movmentMultiplayer / 15);
+                this.transform.Translate(translateDirection.normalized / 15);
 
                 break;
             case CharacterMainStates.Armed_not_Aimed:
@@ -124,7 +123,7 @@ public class MovingAgent : MonoBehaviour
                     this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(moveDirection, Vector3.up), 5f * Time.deltaTime);
                 }
 
-                m_anim.SetFloat("forward", getMovmentInput().magnitude*movmentMultiplayer);
+                m_anim.SetFloat("forward", getMovmentInput().magnitude);
 
                 float divider = 1;
                 if(m_characterState.Equals(CharacterMainStates.Idle))
@@ -151,7 +150,7 @@ public class MovingAgent : MonoBehaviour
         return m_hitReaction;
     }
 
-
+    // Get Position of the target
     public virtual Vector3 getTargetPoint()
     {
         Vector3 mouse = Input.mousePosition;
@@ -170,7 +169,8 @@ public class MovingAgent : MonoBehaviour
         return Vector3.zero;
     }
 
-    public Vector3 setTargetHeight(Vector3 position ,string tag)
+    // Set target Height depending on the target type.
+    private Vector3 setTargetHeight(Vector3 position ,string tag)
     {
         switch (tag)
         {
@@ -219,45 +219,7 @@ public class MovingAgent : MonoBehaviour
         {
            if( m_aimIK.solver.IKPositionWeight >0.3)
             {
-                m_recoil.Fire(2);
-
-                if(m_weapon)
-                {
-                    m_weapon.FireProjectile();
-                }
-
-                //if (Input.GetMouseButton(0))
-                //{
-                //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                //    // Raycast to find a ragdoll collider
-                //    RaycastHit hit = new RaycastHit();
-                //    if (Physics.Raycast(ray, out hit, 100f,enemyHitLayerMask))
-                //    {
-                //      MovingAgent movingAgnet= hit.transform.GetComponentInParent<MovingAgent>();
-
-                //        if(movingAgnet != null)
-                //        {
-                //            movingAgnet.GetHitReaction().Hit(hit.collider, (hit.transform.position - this.transform.position) * 0.6f, hit.point);
-
-                //            movingAgnet.setHealth(m_health--);
-
-                //            if (movingAgnet.getHealth() <= 0)
-                //            {
-                //                movingAgnet.enableRagdoll();
-                //                Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
-                //                if (rb != null)
-                //                {
-                //                    Debug.Log(hit.transform.name);
-                //                    rb.isKinematic = false;
-                //                    rb.AddForce((hit.transform.position - this.transform.position) * 200, ForceMode.Impulse);
-                //                }
-                //            }
-                //        }
-                //        // Use the HitReaction
-
-                //    }
-                //}
+                m_equipmentSystem.FireCurrentWeapon();
             }
         }
     }
@@ -271,13 +233,21 @@ public class MovingAgent : MonoBehaviour
         {
             if (Input.GetMouseButton(1))
             {
-                m_characterState = CharacterMainStates.Aimed;
-                m_weapon.setAimed(true);
+                
+                if(!m_characterState.Equals(CharacterMainStates.Aimed))
+                {
+                    m_equipmentSystem.OnCharacterStateChanged(CharacterMainStates.Aimed);
+                    m_characterState = CharacterMainStates.Aimed;
+                }
             }
             else
             {
-                m_characterState = CharacterMainStates.Armed_not_Aimed;
-                m_weapon.setAimed(false);
+                
+                if (!m_characterState.Equals(CharacterMainStates.Armed_not_Aimed))
+                {
+                    m_equipmentSystem.OnCharacterStateChanged(CharacterMainStates.Armed_not_Aimed);
+                    m_characterState = CharacterMainStates.Armed_not_Aimed;
+                }
             }
         }
 
@@ -332,20 +302,20 @@ public class MovingAgent : MonoBehaviour
         m_ragdoll.EnableRagdoll();
         m_aimIK.enabled = false;
         characterEnabled = false;
-        m_weapon.disarmWeapon();
+        m_equipmentSystem.DropCurrentWeapon();
     }
 
-    public virtual void Equip()
-    {
-        m_weapon.gameObject.SetActive(true);
-        m_weaponProp.setVisible(false);
-    }
+    //public virtual void Equip()
+    //{
+    //    m_weapon.gameObject.SetActive(true);
+    //    m_weaponProp.setVisible(false);
+    //}
 
-    public virtual void UnEquip()
-    {
-        m_weapon.gameObject.SetActive(false);
-        m_weaponProp.setVisible(true);
-    }
+    //public virtual void UnEquip()
+    //{
+    //    m_weapon.gameObject.SetActive(false);
+    //    m_weaponProp.setVisible(true);
+    //}
     
     public virtual void ToggleEquip()
     {

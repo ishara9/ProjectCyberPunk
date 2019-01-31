@@ -83,12 +83,7 @@ public class AutoMovingAgent : MovingAgent
 
             if(Random.value >0.5)
             {
-                m_recoil.Fire(2);
-
-                if (m_weapon)
-                {
-                    m_weapon.FireProjectile();
-                }
+                //m_equipmentSystem.FireCurrentWeapon();
             }
         }
        
