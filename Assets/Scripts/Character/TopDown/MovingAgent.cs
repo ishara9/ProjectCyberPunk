@@ -76,7 +76,7 @@ public class MovingAgent : MonoBehaviour
     }
     #endregion
 
-
+    #region Need_to_refactor
     // Getters
     public HitReaction GetHitReaction()
     {
@@ -215,9 +215,7 @@ public class MovingAgent : MonoBehaviour
     {
         m_equipmentSystem.UnEquip();
     }
-
-
-
+    #endregion
 
     #region depriciated
     private void updateAgent()
