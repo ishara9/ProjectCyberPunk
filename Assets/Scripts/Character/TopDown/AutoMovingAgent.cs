@@ -7,13 +7,9 @@ public class AutoMovingAgent : MovingAgent
     GameObject player;
     private float ShootingTIme;
 
-    public override void Start()
+    public void Start()
     {
-        base.Start();
-        if(!isEquiped())
-        {
-            ToggleEquip();
-        }
+        m_animationSystem.toggleEquip();
     }
     public override Vector3 getTargetPoint()
     {
@@ -48,7 +44,7 @@ public class AutoMovingAgent : MovingAgent
      */
     public override Vector3 getTurnPoint()
     {
-        Vector3 position = targetObject.transform.position;
+        Vector3 position = m_target.transform.position;
         position.y = this.transform.position.y;
         return position;
     }
@@ -58,7 +54,7 @@ public class AutoMovingAgent : MovingAgent
      */
     public override Vector3 getLookPoint()
     {
-        Vector3 position = targetObject.transform.position;
+        Vector3 position = m_target.transform.position;
         position.y = this.transform.position.y + 1.25f;
         return position;
     }
@@ -104,5 +100,7 @@ public class AutoMovingAgent : MovingAgent
     {
         return Vector3.zero;
     }
+
+
 
 }

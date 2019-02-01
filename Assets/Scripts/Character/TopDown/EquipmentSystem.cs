@@ -3,40 +3,149 @@ using System.Collections.Generic;
 using UnityEngine;
 using RootMotion.FinalIK;
 
-public class EquipmentSystem : MonoBehaviour
+public class EquipmentSystem
 {
     // Start is called before the first frame update
+    #region protectedParameters
     protected Weapon m_currentWeapon;
     protected WeaponProp m_currentWeaponProp;
-    protected GameObject target;
+    protected GameObject m_target;
     protected Recoil m_recoil;
+    protected string m_owner;
+    protected AutoMovingAgent.CharacterMainStates m_currentState;
+    protected AgentAnimationSystem m_animationSystem;
+    #endregion
 
-
-    void Awake()
+    public EquipmentSystem(Weapon weapon, WeaponProp prop, string owner, AutoMovingAgent.CharacterMainStates state,GameObject target,Recoil recoil,AgentAnimationSystem animSystem)
     {
-        // Intialize Weapon
-        m_currentWeapon = GetComponentInChildren<Weapon>();
-        m_currentWeaponProp = GetComponentInChildren<WeaponProp>();
-        m_recoil = this.GetComponent<Recoil>();
-    }
-
-    // Update is called once per frame
-    void Start()
-    {
+        m_currentWeapon = weapon;
+        m_currentWeaponProp = prop;
+        m_owner = owner;
+        m_currentState = state;
+        m_target = target;
         m_currentWeapon.setGunTarget(target);
-        m_currentWeapon.setOwner(this.name);
+        m_currentWeapon.setOwner(m_owner);
+        m_recoil = recoil;
+        m_animationSystem = animSystem;
     }
+
+
+    #region updates
+    public void UpdateSystem(MovingAgent.CharacterMainStates state)
+    {
+        m_currentWeapon.updateWeapon();
+
+        // On Character state change.
+        switch (state)
+        {
+            case MovingAgent.CharacterMainStates.Aimed:
+
+                // Set Gun Aimed;
+                if (!m_currentState.Equals(MovingAgent.CharacterMainStates.Aimed))
+                {
+                    aimCurrentEquipment(true);
+                }
+
+                break;
+            case MovingAgent.CharacterMainStates.Armed_not_Aimed:
+
+                // Set Gun Aimed;
+                if (!m_currentState.Equals(MovingAgent.CharacterMainStates.Armed_not_Aimed))
+                {
+                    
+                    aimCurrentEquipment(true);
+                }
+                break;
+            case MovingAgent.CharacterMainStates.Idle:
+                if (!m_currentState.Equals(MovingAgent.CharacterMainStates.Idle))
+                {
+                    aimCurrentEquipment(false);
+                }
+                break;
+        }
+
+
+        m_currentState = state;
+    }
+    #endregion
+
+    #region animationEvents
+    // Equip Animation event.
+    public void Equip()
+    {
+        m_currentWeapon.gameObject.SetActive(true);
+        m_currentWeaponProp.setVisible(false);
+        m_currentWeapon.setGunTarget(m_target);
+    }
+
+    // UnEquip Animation event.
+    public void UnEquip()
+    {
+        m_currentWeapon.gameObject.SetActive(false);
+        m_currentWeaponProp.setVisible(true);
+    }
+    #endregion
+
+    #region commands
+    public void FireCurrentWeapon()
+    {
+        if (m_currentWeapon)
+        {
+            m_currentWeapon.FireProjectile();
+            m_recoil.Fire(2);
+        }
+    }
+
+    public void DropCurrentWeapon()
+    {
+        m_currentWeapon.dropWeapon();
+    }
+
+    public void equipCurrentEquipment()
+    {
+        m_animationSystem.equipEquipment();
+    }
+
+    public MovingAgent.CharacterMainStates toggleEquipCurrentEquipment()
+    {
+        return m_animationSystem.toggleEquip();
+    }
+
+    public void unEquipCurrentEquipment()
+    {
+        m_animationSystem.unEquipEquipment();
+    }
+
+    public void aimCurrentEquipment(bool aimed)
+    {
+        m_animationSystem.aimEquipment(aimed);
+        getCurrentWeapon().setAimed(aimed);
+    }
+
+    public bool isProperlyAimed()
+    {
+        return m_animationSystem.isProperlyAimed();
+    }
+
+    #endregion
+
+    #region GettersAndSetters definition
 
     public void setCurrentWeapon(Weapon currentWeapon)
     {
         this.m_currentWeapon = currentWeapon;
-        m_currentWeapon.setGunTarget(target);
-        m_currentWeapon.setOwner(this.transform.name);
+        m_currentWeapon.setGunTarget(m_target);
+        m_currentWeapon.setOwner(m_owner);
     }
 
     public void setCurretnWeaponProp(WeaponProp weaponProp)
     {
         this.m_currentWeaponProp = weaponProp;
+    }
+
+    public void setOwner(string owner)
+    {
+        m_owner = owner;
     }
 
     public Weapon getCurrentWeapon()
@@ -54,50 +163,9 @@ public class EquipmentSystem : MonoBehaviour
         m_currentWeapon.setGunTarget(target);
     }
 
-    public void UpdateSystem()
+    public GameObject getTarget()
     {
-        m_currentWeapon.updateWeapon();
+        return m_target;
     }
-
-    public void DropCurrentWeapon()
-    {
-        m_currentWeapon.dropWeapon();
-    }
-
-    public void Equip()
-    {
-        m_currentWeapon.gameObject.SetActive(true);
-        m_currentWeaponProp.setVisible(false);
-    }
-
-    public void UnEquip()
-    {
-        m_currentWeapon.gameObject.SetActive(false);
-        m_currentWeaponProp.setVisible(true);
-    }
-
-    public void OnCharacterStateChanged(MovingAgent.CharacterMainStates state)
-    {
-        switch (state)
-        {
-            case MovingAgent.CharacterMainStates.Aimed:
-                getCurrentWeapon().setAimed(true);
-                break;
-            case MovingAgent.CharacterMainStates.Armed_not_Aimed:
-                getCurrentWeapon().setAimed(false);
-                break;
-            case MovingAgent.CharacterMainStates.Idle:
-                break;
-        }
-
-    }
-
-    public void FireCurrentWeapon()
-    {
-        if(m_currentWeapon)
-        {
-            m_currentWeapon.FireProjectile();
-            m_recoil.Fire(2);
-        }
-    }
+    #endregion
 }

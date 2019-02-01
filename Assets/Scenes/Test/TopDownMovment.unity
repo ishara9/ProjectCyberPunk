@@ -8858,8 +8858,8 @@ GameObject:
   - component: {fileID: 1633670990}
   - component: {fileID: 1633670991}
   - component: {fileID: 1633670989}
-  - component: {fileID: 1633670993}
   - component: {fileID: 1633670994}
+  - component: {fileID: 1633670993}
   m_Layer: 9
   m_Name: MovableAgent
   m_TagString: Player

@@ -1646,7 +1646,6 @@ GameObject:
   m_Component:
   - component: {fileID: 545790174}
   - component: {fileID: 545790173}
-  - component: {fileID: 8826304662874713447}
   - component: {fileID: 545790172}
   - component: {fileID: 545790171}
   - component: {fileID: 545790170}
@@ -1715,18 +1714,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &8826304662874713447
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 545790168}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d70f445ef166364781d248d430489fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &545790172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1745,7 +1732,6 @@ MonoBehaviour:
   enemyHitLayerMask:
     serializedVersion: 2
     m_Bits: 0
-  targetObject: {fileID: 0}
 --- !u!114 &545790171
 MonoBehaviour:
   m_ObjectHideFlags: 0
