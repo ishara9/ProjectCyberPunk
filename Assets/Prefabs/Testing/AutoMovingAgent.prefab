@@ -1646,11 +1646,11 @@ GameObject:
   m_Component:
   - component: {fileID: 545790174}
   - component: {fileID: 545790173}
-  - component: {fileID: 545790172}
-  - component: {fileID: 545790171}
   - component: {fileID: 545790170}
-  - component: {fileID: 545790169}
+  - component: {fileID: 545790171}
+  - component: {fileID: 8057328190263351480}
   - component: {fileID: 545790175}
+  - component: {fileID: 2141348749673119053}
   m_Layer: 9
   m_Name: AutoMovingAgent
   m_TagString: Enemy
@@ -1714,90 +1714,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &545790172
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 545790168}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50a401bf80fc2bc44804bc8b1ae169d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  floorHitLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  enemyHitLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
---- !u!114 &545790171
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 545790168}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c613189034e145e5abecee53af1ce0e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 1
-  ik: {fileID: 545790169}
-  aimIK: {fileID: 545790170}
-  handedness: 0
-  twoHanded: 1
-  recoilWeight:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.00026988983
-      inSlope: 37.68351
-      outSlope: 37.68351
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.033218965
-      value: 1.0040972
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.21876264
-      value: 0.00026988983
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  magnitudeRandom: 0.1
-  rotationRandom: {x: 0, y: 10, z: 0}
-  handRotationOffset: {x: 0, y: 7, z: 0}
-  blendTime: 0.1
-  offsets:
-  - offset: {x: 0.02, y: 0.03, z: -0.05}
-    additivity: 0.5
-    maxAdditiveOffsetMag: 0.2
-    effectorLinks:
-    - effector: 6
-      weight: 1
-    - effector: 2
-      weight: 0.3
-    - effector: 0
-      weight: 0.1
-  rotationOffset: {x: 0, y: 0, z: 0, w: 1}
 --- !u!114 &545790170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1856,7 +1772,73 @@ MonoBehaviour:
     poleTarget: {fileID: 0}
     clampWeight: 0.442
     clampSmoothing: 2
---- !u!114 &545790169
+--- !u!114 &545790171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 545790168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c613189034e145e5abecee53af1ce0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weight: 1
+  ik: {fileID: 0}
+  aimIK: {fileID: 545790170}
+  handedness: 0
+  twoHanded: 1
+  recoilWeight:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.00026988983
+      inSlope: 37.68351
+      outSlope: 37.68351
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.033218965
+      value: 1.0040972
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.21876264
+      value: 0.00026988983
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  magnitudeRandom: 0.1
+  rotationRandom: {x: 0, y: 10, z: 0}
+  handRotationOffset: {x: 0, y: 7, z: 0}
+  blendTime: 0.1
+  offsets:
+  - offset: {x: 0.02, y: 0.03, z: -0.05}
+    additivity: 0.5
+    maxAdditiveOffsetMag: 0.2
+    effectorLinks:
+    - effector: 6
+      weight: 1
+    - effector: 2
+      weight: 0.3
+    - effector: 0
+      weight: 0.1
+  rotationOffset: {x: 0, y: 0, z: 0, w: 1}
+--- !u!114 &8057328190263351480
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2326,11 +2308,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc258957e94624710928e65beef13de4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ik: {fileID: 545790169}
+  ik: {fileID: 0}
   ragdollToAnimationTime: 0.2
   applyIkOnRagdoll: 0
   applyVelocity: 1
   applyAngularVelocity: 1
+--- !u!114 &2141348749673119053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 545790168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d563acaf1b7d6444a5a5096f8bd6e2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floorHitLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  enemyHitLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  isPlayer: 0
 --- !u!1 &550081479
 GameObject:
   m_ObjectHideFlags: 0
@@ -4104,7 +4105,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1276564753}
   - component: {fileID: 1276564755}
-  - component: {fileID: 1276564754}
   m_Layer: 9
   m_Name: Hit Reaction
   m_TagString: Untagged
@@ -4139,7 +4139,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weight: 1
-  ik: {fileID: 545790169}
+  ik: {fileID: 8057328190263351480}
   effectorHitPoints:
   - name: L Forearm
     collider: {fileID: 637494726}
@@ -5097,22 +5097,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     boneLinks:
-    - bone: {fileID: 0}
+    - bone: {fileID: 1784395991}
       weight: 1
---- !u!114 &1276564754
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1276564752}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36c4cd7e8f3ef4beca08a45c21632be2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hitReaction: {fileID: 1276564755}
-  hitForce: 10
 --- !u!1 &1298886370
 GameObject:
   m_ObjectHideFlags: 0
@@ -7430,15 +7416,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8a5973e326885694c8eb4a575b705591, type: 3}
---- !u!4 &4201079489590347735 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4276584366140610, guid: 8a5973e326885694c8eb4a575b705591,
-    type: 3}
-  m_PrefabInstance: {fileID: 4197928859951737621}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4198481758481396863 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1700825503440746, guid: 8a5973e326885694c8eb4a575b705591,
+    type: 3}
+  m_PrefabInstance: {fileID: 4197928859951737621}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4201079489590347735 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4276584366140610, guid: 8a5973e326885694c8eb4a575b705591,
     type: 3}
   m_PrefabInstance: {fileID: 4197928859951737621}
   m_PrefabAsset: {fileID: 0}

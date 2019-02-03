@@ -37,27 +37,26 @@ public class ProjectileBasic : MonoBehaviour
     {
         MovingAgent movingAgnet = other.transform.GetComponentInParent<MovingAgent>();
         
-
         if (movingAgnet != null  && !hit)
         {
             if( !shooterName.Equals(movingAgnet.name))
             {
                 hit = true;
-                movingAgnet.GetHitReaction().Hit(other, (this.transform.forward) * 5f, other.transform.position);
+                movingAgnet.getDamageSystem().reactOnHit(other, (this.transform.forward) * 5f, other.transform.position);
 
-                float health = movingAgnet.getHealth();
-                health--;
-                movingAgnet.setHealth(health);
+                DamageSystem damageSystem = movingAgnet.getDamageSystem();
+                damageSystem.DamageByAmount(1);
+
                 speed = 0;
                 Destroy(this.gameObject);
-                Debug.Log(other.transform.name);
-                if (movingAgnet.getHealth() <= 0)
+
+                if (!damageSystem.IsFunctional())
                 {
-                    movingAgnet.enableRagdoll();
+                    movingAgnet.DestroyCharacter();
                     Rigidbody rb = other.transform.GetComponent<Rigidbody>();
+
                     if (rb != null)
-                    {
-                        
+                    { 
                         rb.isKinematic = false;
                         rb.AddForce((this.transform.forward) * 200, ForceMode.Impulse);
                     }
