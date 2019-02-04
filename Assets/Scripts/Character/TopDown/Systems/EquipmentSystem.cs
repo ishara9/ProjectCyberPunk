@@ -24,6 +24,7 @@ public class EquipmentSystem
         m_currentState = state;
         m_target = target;
         m_currentWeapon.setGunTarget(target);
+        m_currentWeapon.setAimed(false);
         m_currentWeapon.setOwner(m_owner);
         m_recoil = recoil;
         m_animationSystem = animSystem;
@@ -53,7 +54,7 @@ public class EquipmentSystem
                 if (!m_currentState.Equals(MovingAgent.CharacterMainStates.Armed_not_Aimed))
                 {
                     
-                    aimCurrentEquipment(true);
+                    aimCurrentEquipment(false);
                 }
                 break;
             case MovingAgent.CharacterMainStates.Idle:

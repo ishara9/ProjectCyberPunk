@@ -15,11 +15,22 @@ public class AIAgent : AgentController
     private float moveCounter;
     private float shootingCounter =0;
     private Vector3 moveDirection;
+    private int shotCount = 10;
 
     public AIAgent()
     {
         
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<MovingAgent>();
+       GameObject[] playerTaggedObjects = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (GameObject obj in playerTaggedObjects)
+        {
+            player = obj.GetComponent<MovingAgent>();
+
+            if(player != null)
+            {
+                break;
+            }
+        }
     }
 
     #region Updates
@@ -42,14 +53,21 @@ public class AIAgent : AgentController
         targetPostion.y = 1.5f;
         m_movingAgent.setTargetPoint(targetPostion);
 
-        if (shootingCounter > 3)
+        if (shootingCounter > 1)
         {
             targetPostion = player.transform.position;
-            targetPostion = new Vector3(targetPostion.x + Random.value, 1.2f + Random.value / 5, targetPostion.z + Random.value);
+            targetPostion = new Vector3(targetPostion.x, 1.2f + targetPostion.y, targetPostion.z);
             m_movingAgent.setTargetPoint(targetPostion);
 
             m_movingAgent.FireWeapon();
             shootingCounter = 0;
+            shotCount--;
+            
+            if(shotCount < 0)
+            {
+                shootingCounter = 10;
+                shootingCounter = -3;
+            }
         }
 
         shootingCounter += Time.deltaTime * 2;

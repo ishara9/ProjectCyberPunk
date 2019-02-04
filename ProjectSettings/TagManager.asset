@@ -5,12 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
-  - Floor
   - ActivateTrigger
   - Character 1
   - Character 2
   - ShowCursor
   - WeaponProp
+  - Wall
+  - Floor
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - PostProcessing
   - Enemy
   - Target
-  - 
+  - Projectile
   - 
   - 
   - 

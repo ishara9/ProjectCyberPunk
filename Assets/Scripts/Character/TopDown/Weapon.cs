@@ -14,6 +14,7 @@ public class Weapon : MonoBehaviour
     private Rigidbody m_rigidbody;
     private BoxCollider m_collider;
     private string ownerName;
+    private bool enableLine;
 
 
     public void Awake()
@@ -30,12 +31,16 @@ public class Weapon : MonoBehaviour
     public void setAimed(bool aimed)
     {
         isAimed = aimed;
-        m_line.enabled = aimed;
+        if(enableLine)
+        {
+            m_line.enabled = aimed;
+        }
+
     }
 
     public void updateWeapon()
     {
-        if (isAimed)
+        if (isAimed && enableLine)
         {
             Vector3 direction = target.transform.position - targetPoint.transform.position;
             m_line.SetPosition(0, targetPoint.transform.position);
@@ -68,11 +73,13 @@ public class Weapon : MonoBehaviour
 
     public void FireProjectile()
     {
-        GameObject Tempprojectile = GameObject.Instantiate(projectile);
-        Tempprojectile.transform.parent = null;
-        Tempprojectile.transform.position =targetPoint.transform.position;
-        //Tempprojectile.transform.forward = targetPoint.transform.forward;
-        Tempprojectile.transform.forward =( target.transform.position - targetPoint.transform.position).normalized;
+        GameObject Tempprojectile = GameObject.Instantiate(projectile,targetPoint.transform.position, this.transform.rotation);
+        //Tempprojectile.transform.parent = targetPoint.transform;
+        //Tempprojectile.transform.localPosition =Vector3.zero;
+        //Tempprojectile.transform.parent = null;
+        //Tempprojectile.transform.position = this.transform.position;
+       //Tempprojectile.transform.forward = targetPoint.transform.forward;
+       Tempprojectile.transform.forward =( target.transform.position - targetPoint.transform.position).normalized;
         Tempprojectile.GetComponent<ProjectileBasic>().speed = 1f;
         Tempprojectile.GetComponent<ProjectileBasic>().setShooterName(ownerName);
     }
@@ -80,6 +87,11 @@ public class Weapon : MonoBehaviour
     public void setOwner(string owner)
     {
         ownerName = owner;
+    }
+
+    public void SetGunTargetLineStatus(bool status)
+    {
+        enableLine = status;
     }
 
 }

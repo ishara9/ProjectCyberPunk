@@ -45,17 +45,19 @@ public class MovingAgent : MonoBehaviour
         // Create movment system.
         m_movmentSystem = new AgentMovmentSystem(this.transform,m_characterState,m_target,m_animationSystem);
 
-        m_damageSystem = new DamageSystem(2, this.GetComponent<RagdollUtility>(), this.GetComponentInChildren<HitReaction>());
+        m_damageSystem = new DamageSystem(5, this.GetComponent<RagdollUtility>(), this.GetComponentInChildren<HitReaction>());
         
         if(isPlayer)
         {
             m_agentController = new PlayerAgent(enemyHitLayerMask,floorHitLayerMask);
             m_agentController.setMovableAgent(this);
+            m_currentWeapon.SetGunTargetLineStatus(true);
         }
         else
         {
             m_agentController = new AIAgent();
             m_agentController.setMovableAgent(this);
+            m_currentWeapon.SetGunTargetLineStatus(false);
         }
     }
     #endregion

@@ -23,7 +23,6 @@ public class ProjectileBasic : MonoBehaviour
 
         if (DistanceTravelled > 1)
         {
-            Debug.Log("destroy");
             Destroy(this.gameObject);
         }
     }
@@ -35,11 +34,30 @@ public class ProjectileBasic : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        MovingAgent movingAgnet = other.transform.GetComponentInParent<MovingAgent>();
-        
-        if (movingAgnet != null  && !hit)
+        string tag = other.tag;
+        switch (tag)
         {
-            if( !shooterName.Equals(movingAgnet.name))
+            case "Enemy":
+            
+                hitOnEnemy(other);
+                break;
+            case"Wall":
+                hitOnWall(other);
+                break;
+            case "Player":
+                hitOnEnemy(other);
+                break;
+        }
+
+    }
+
+    private void hitOnEnemy(Collider other)
+    {
+        MovingAgent movingAgnet = other.transform.GetComponentInParent<MovingAgent>();
+
+        if (movingAgnet != null && !hit)
+        {
+            if (!shooterName.Equals(movingAgnet.name))
             {
                 hit = true;
                 movingAgnet.getDamageSystem().reactOnHit(other, (this.transform.forward) * 5f, other.transform.position);
@@ -49,6 +67,7 @@ public class ProjectileBasic : MonoBehaviour
 
                 speed = 0;
                 Destroy(this.gameObject);
+               
 
                 if (!damageSystem.IsFunctional())
                 {
@@ -56,7 +75,7 @@ public class ProjectileBasic : MonoBehaviour
                     Rigidbody rb = other.transform.GetComponent<Rigidbody>();
 
                     if (rb != null)
-                    { 
+                    {
                         rb.isKinematic = false;
                         rb.AddForce((this.transform.forward) * 200, ForceMode.Impulse);
                     }
@@ -64,8 +83,14 @@ public class ProjectileBasic : MonoBehaviour
             }
 
         }
-
     }
+
+    private void hitOnWall(Collider wall)
+    {
+        speed = 0;
+        Destroy(this.gameObject);
+    }
+
     public void setShooterName(string name)
     {
         this.shooterName = name;

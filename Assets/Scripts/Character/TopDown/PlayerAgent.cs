@@ -63,12 +63,14 @@ public class PlayerAgent :AgentController
 
         if (Physics.Raycast(castPoint, out hit, Mathf.Infinity, floorHitLayerMask))
         {
-            targetPosition = setTargetHeight(hit.point, hit.transform.tag);
+            // targetPosition = setTargetHeight(hit.point, hit.transform.tag);
+            targetPosition = hit.point;
         }
 
         if (Physics.Raycast(castPoint, out hit, Mathf.Infinity, enemyHitLayerMask))
         {
-            targetPosition = setTargetHeight(hit.point, hit.transform.tag);
+            //targetPosition = setTargetHeight(hit.point, hit.transform.tag);
+            targetPosition = hit.point;
         }
 
         m_movingAgent.setTargetPoint(targetPosition);
@@ -93,7 +95,7 @@ public class PlayerAgent :AgentController
         switch (tag)
         {
             case "Floor":
-                return new Vector3(position.x, 1.25f, position.z);
+                return new Vector3(position.x, position.y, position.z);
             case "Enemy":
                 return position;
         }
