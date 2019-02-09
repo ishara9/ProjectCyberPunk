@@ -29,9 +29,13 @@ public class PlayerAgent :AgentController
             m_movingAgent.StopAiming();
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            m_movingAgent.toggleCurrentWeapon();
+            m_movingAgent.togglepSecondaryWeapon();
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            m_movingAgent.togglePrimaryWeapon();
         }
 
         if (Input.GetKeyDown(KeyCode.C))

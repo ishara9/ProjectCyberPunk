@@ -38,7 +38,7 @@ public class AIAgent : AgentController
     {
         if(!m_movingAgent.isEquiped())
         {
-            m_movingAgent.toggleCurrentWeapon();
+            m_movingAgent.togglepSecondaryWeapon();
         }
         m_movingAgent.AimWeapon();
 

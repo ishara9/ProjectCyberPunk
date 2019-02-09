@@ -22,7 +22,7 @@ public class AgentAnimationSystem
         switch (state)
         {
             case MovingAgent.CharacterMainStates.Aimed:
-                m_aimIK.solver.IKPositionWeight = Mathf.Lerp(m_aimIK.solver.IKPositionWeight, 1, Time.deltaTime * m_aimSpeed/4);
+                m_aimIK.solver.IKPositionWeight = Mathf.Lerp(m_aimIK.solver.IKPositionWeight, 1, Time.deltaTime * m_aimSpeed/2);
                 break;
             case MovingAgent.CharacterMainStates.Armed_not_Aimed:
                 m_aimIK.solver.IKPositionWeight = Mathf.Lerp(m_aimIK.solver.IKPositionWeight, 0, Time.deltaTime * m_aimSpeed);
@@ -37,14 +37,10 @@ public class AgentAnimationSystem
 
     #region commands
 
-    public void equipEquipment()
-    {
-        m_animator.SetBool("equip", true);
-    }
-
-    public void unEquipEquipment()
+    public MovingAgent.CharacterMainStates unEquipEquipment()
     {
         m_animator.SetBool("equip", false);
+        return MovingAgent.CharacterMainStates.Idle;
     }
 
     public MovingAgent.CharacterMainStates toggleEquip()
@@ -61,6 +57,12 @@ public class AgentAnimationSystem
         {
             return MovingAgent.CharacterMainStates.Idle;
         }
+    }
+
+    public MovingAgent.CharacterMainStates equipCurrentEquipment()
+    {
+        m_animator.SetBool("equip", true);
+        return MovingAgent.CharacterMainStates.Armed_not_Aimed;
     }
 
     public bool isEquiped()
@@ -102,6 +104,10 @@ public class AgentAnimationSystem
         m_aimIK.enabled = false;
     }
 
+    public void setCurretnWeapon(int value)
+    {
+        m_animator.SetFloat("currentWeapon", value);
+    }
     #endregion
 
     #region gettersAndSetters

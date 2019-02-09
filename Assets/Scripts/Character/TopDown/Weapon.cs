@@ -4,17 +4,22 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
+    public enum WEAPONTYPE { primary,secondary};
+
     public GameObject targetPoint;
     public GameObject target;
     public GameObject projectile;
     public LayerMask hitLayerMask;
+    public WEAPONTYPE m_weaponType;
 
-    public bool isAimed;
+    public bool isAimed = false;
     private LineRenderer m_line;
     private Rigidbody m_rigidbody;
     private BoxCollider m_collider;
     private string ownerName;
     private bool enableLine;
+    private Vector3 gunFireingPoint;
+    
 
 
     public void Awake()
@@ -61,6 +66,8 @@ public class Weapon : MonoBehaviour
 
             Debug.DrawRay(targetPoint.transform.position, direction.normalized, Color.red);
         }
+
+        gunFireingPoint = targetPoint.transform.position - targetPoint.transform.forward * 0.1f;
     }
 
     public void dropWeapon()
@@ -73,13 +80,8 @@ public class Weapon : MonoBehaviour
 
     public void FireProjectile()
     {
-        GameObject Tempprojectile = GameObject.Instantiate(projectile,targetPoint.transform.position, this.transform.rotation);
-        //Tempprojectile.transform.parent = targetPoint.transform;
-        //Tempprojectile.transform.localPosition =Vector3.zero;
-        //Tempprojectile.transform.parent = null;
-        //Tempprojectile.transform.position = this.transform.position;
-       //Tempprojectile.transform.forward = targetPoint.transform.forward;
-       Tempprojectile.transform.forward =( target.transform.position - targetPoint.transform.position).normalized;
+        GameObject Tempprojectile = GameObject.Instantiate(projectile, gunFireingPoint, this.transform.rotation);
+        Tempprojectile.transform.forward =( target.transform.position - targetPoint.transform.position).normalized;
         Tempprojectile.GetComponent<ProjectileBasic>().speed = 1f;
         Tempprojectile.GetComponent<ProjectileBasic>().setShooterName(ownerName);
     }
@@ -93,5 +95,11 @@ public class Weapon : MonoBehaviour
     {
         enableLine = status;
     }
+
+    public WEAPONTYPE getWeaponType()
+    {
+        return m_weaponType;
+    }
+
 
 }

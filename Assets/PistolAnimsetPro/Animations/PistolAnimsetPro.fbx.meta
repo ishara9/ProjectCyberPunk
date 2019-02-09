@@ -14267,7 +14267,7 @@ ModelImporter:
       curves: []
       events:
       - time: 0.08394607
-        functionName: Equip
+        functionName: EquipPistol
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -14454,7 +14454,7 @@ ModelImporter:
       curves: []
       events:
       - time: 0.4469364
-        functionName: UnEquip
+        functionName: UnEquipPistol
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
