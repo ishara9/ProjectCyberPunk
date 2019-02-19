@@ -20,6 +20,8 @@ public class AgentMovmentSystem
     #region Update
     public void UpdateMovmentSystem(MovingAgent.CharacterMainStates characterState,Vector3 movmentDirection)
     {
+        movmentDirection = getDirectionRelativeToCamera(movmentDirection);
+
         m_characterState = characterState;
         switch (m_characterState)
         {
@@ -93,6 +95,23 @@ public class AgentMovmentSystem
         Vector3 position = m_target.transform.position;
         position.y = m_characterTransform.position.y;
         return position;
+    }
+
+    private Vector3 getDirectionRelativeToCamera(Vector3 direction)
+    {
+        var camera = Camera.main;
+
+        //camera forward and right vectors:
+        var forward = camera.transform.forward;
+        var right = camera.transform.right;
+
+        //project forward and right vectors on the horizontal plane (y = 0)
+        forward.y = 0f;
+        right.y = 0f;
+        forward.Normalize();
+        right.Normalize();
+
+        return forward * direction.x - right * direction.z;
     }
 
     #endregion

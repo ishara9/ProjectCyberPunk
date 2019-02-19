@@ -164,7 +164,11 @@ public class EquipmentSystem
 
     public void DropCurrentWeapon()
     {
-        m_currentWeapon.dropWeapon();
+        if(m_currentWeapon)
+        {
+            m_currentWeapon.dropWeapon();
+        }
+
     }
 
 

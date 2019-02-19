@@ -96,6 +96,11 @@ public class ProjectileBasic : MonoBehaviour
     private void hitOnWall(Collider wall)
     {
         speed = 0;
+        if (particleObject)
+        {
+            GameObject hitParticle = GameObject.Instantiate(particleObject);
+            hitParticle.transform.position = this.transform.position;
+        }
         Destroy(this.gameObject);
     }
 
