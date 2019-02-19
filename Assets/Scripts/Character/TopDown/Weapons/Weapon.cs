@@ -7,14 +7,15 @@ public class Weapon : MonoBehaviour
     public enum WEAPONTYPE { primary,secondary};
     public delegate void WeaponFireDeligaet(float weight);
 
+    public ParticleSystem gunMuzzle;
+    public ParticleSystem gunFireLight;
+
 
     public GameObject targetPoint;
 
     public GameObject projectile;
     public LayerMask hitLayerMask;
-
     public float fireRate;
-    //public bool automatic;
     public float weaponRecoil = 2;
 
     private bool isAimed = false;
@@ -116,6 +117,14 @@ public class Weapon : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         onWeaponFire(weaponRecoil);
+
+        if(gunMuzzle !=null)
+        {
+            Debug.Log("play");
+            gunMuzzle.Play();
+            gunFireLight.Play();
+        }
+
     }
 
     protected virtual void fireWeapon()

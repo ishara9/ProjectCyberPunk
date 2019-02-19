@@ -10,6 +10,7 @@ public class ProjectileBasic : MonoBehaviour
     public float DistanceTravelled = 0;
     private string shooterName ="test";
     private bool hit = false;
+    public GameObject particleObject;
     void Start()
     {
 
@@ -67,6 +68,13 @@ public class ProjectileBasic : MonoBehaviour
 
                 speed = 0;
                 Destroy(this.gameObject);
+
+                if(particleObject)
+                {
+                    GameObject hitParticle = GameObject.Instantiate(particleObject);
+                    hitParticle.transform.position = this.transform.position;
+                }
+
                
 
                 if (!damageSystem.IsFunctional())
