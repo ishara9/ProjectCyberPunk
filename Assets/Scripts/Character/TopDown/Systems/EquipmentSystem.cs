@@ -75,9 +75,9 @@ public class EquipmentSystem
     }
     #endregion
 
-    #region animationEvents
+    #region Event handlers
     // Equip Animation event.
-    public void Equip()
+    public void EquipAnimationEvent()
     {
         Weapon.WEAPONTYPE type = m_currentWeapon.getWeaponType();
         m_inEquipingAction = false;
@@ -103,7 +103,7 @@ public class EquipmentSystem
     }
 
     // UnEquip Animation event.
-    public void UnEquip()
+    public void UnEquipAnimationEvent()
     {
         Weapon.WEAPONTYPE type = m_currentWeapon.getWeaponType();
         m_currentWeapon.gameObject.SetActive(false);
@@ -121,17 +121,46 @@ public class EquipmentSystem
                 break;
         }
     }
+
+    public void onWeaponFire(float weight)
+    {
+        m_recoil.Fire(weight);
+    }
     #endregion
 
     #region commands
-    public void FireCurrentWeapon()
+
+    public void pullTrigger()
     {
-        if (m_currentWeapon)
+        if(m_currentWeapon)
         {
-            m_currentWeapon.FireProjectile();
-            m_recoil.Fire(2);
+            m_currentWeapon.pullTrigger();
         }
     }
+
+    public void releaseTrigger()
+    {
+        if(m_currentWeapon)
+        {
+            m_currentWeapon.releaseTrigger();
+        }
+    }
+
+    //public void FireCurrentWeapon()
+    //{
+    //    if (m_currentWeapon && !m_currentWeapon.automatic)
+    //    {
+    //        m_currentWeapon.fireWeapon();
+    //    }
+    //}
+
+    //public void continouseFire()
+    //{
+    //    if (m_currentWeapon && m_currentWeapon.automatic)
+    //    {
+    //        m_currentWeapon.continouseFire();
+    //    }
+    //}
 
     public void DropCurrentWeapon()
     {
@@ -139,30 +168,29 @@ public class EquipmentSystem
     }
 
 
-    public MovingAgent.CharacterMainStates equipCurrentEquipment()
-    {   
-       return m_animationSystem.equipCurrentEquipment();
-    }
+    //public MovingAgent.CharacterMainStates equipCurrentEquipment()
+    //{   
+    //   return m_animationSystem.equipCurrentEquipment();
+    //}
 
-    public MovingAgent.CharacterMainStates unEquipCurrentEquipment()
-    {
-       return m_animationSystem.unEquipEquipment();
-    }
+    //public MovingAgent.CharacterMainStates unEquipCurrentEquipment()
+    //{
+    //   return m_animationSystem.unEquipEquipment();
+    //}
 
-    public void aimCurrentEquipment(bool aimed)
+    private void aimCurrentEquipment(bool aimed)
     {
         m_animationSystem.aimEquipment(aimed);
         getCurrentWeapon().setAimed(aimed);
     }
+    #endregion
+
+    #region Getters And Setters definition
 
     public bool isProperlyAimed()
     {
         return m_animationSystem.isProperlyAimed();
     }
-
-    #endregion
-
-    #region GettersAndSetters definition
 
     public void setCurrentWeapon(Weapon currentWeapon)
     {
@@ -186,10 +214,17 @@ public class EquipmentSystem
         return m_currentWeapon;
     }
 
-    public WeaponProp getCurrentWeaponProp()
-    {
-        return m_pistolProp;
-    }
+    //public WeaponProp getCurrentWeaponProp()
+    //{
+    //    if(m_currentWeapon.getWeaponType() == Weapon.WEAPONTYPE.primary)
+    //    {
+    //        return m_rifleProp;
+    //    }
+    //    else
+    //    {
+    //        return m_pistolProp;
+    //    }
+    //}
 
     public void setWeaponTarget(GameObject target)
     {
@@ -227,7 +262,7 @@ public class EquipmentSystem
                     m_rifle.gameObject.SetActive(true);
                     m_rifleProp.setVisible(false);
                     m_pistolProp.setVisible(true);
-                    return m_animationSystem.equipCurrentEquipment();
+                    return m_animationSystem.fastEquipCurrentEquipment();
                 }
             }
             else
@@ -265,7 +300,7 @@ public class EquipmentSystem
                     m_rifleProp.setVisible(true);
                     m_pistolProp.setVisible(false);
                     m_pistol.gameObject.SetActive(true);
-                    return m_animationSystem.equipCurrentEquipment();
+                    return m_animationSystem.fastEquipCurrentEquipment();
                 }
             }
             else
@@ -284,6 +319,21 @@ public class EquipmentSystem
 
     }
 
+    //private void setCurrentWeapon(Weapon.WEAPONTYPE type)
+    //{
+    //    switch (type)
+    //    {
+    //        case Weapon.WEAPONTYPE.primary:
+    //            m_currentWeapon = m_rifle;
+
+    //            break;
+    //        case Weapon.WEAPONTYPE.secondary:
+    //            m_currentWeapon = m_pistol;
+
+    //            break;
+    //    }
+    //}
+
     private void getAllWeapons(Weapon[] weapons, WeaponProp[] props)
     {
         foreach (Weapon wep in weapons)
@@ -292,6 +342,7 @@ public class EquipmentSystem
             wep.setAimed(false);
             wep.setGunTarget(m_target);
             wep.gameObject.SetActive(false);
+            wep.addOnWeaponFireEvent(onWeaponFire);
 
             Weapon.WEAPONTYPE type = wep.getWeaponType();
 
@@ -323,5 +374,7 @@ public class EquipmentSystem
             }
         }
     }
+
+
     #endregion
 }

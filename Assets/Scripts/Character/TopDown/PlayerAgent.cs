@@ -40,7 +40,7 @@ public class PlayerAgent :AgentController
 
         if (Input.GetKeyDown(KeyCode.C))
         {
-            m_movingAgent.getAnimationSystem().toggleCrouched();
+            m_movingAgent.toggleCrouched();
         }
 
         m_movingAgent.moveCharacter(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")));
@@ -54,7 +54,12 @@ public class PlayerAgent :AgentController
     {
         if (Input.GetMouseButtonDown(0) && Input.GetMouseButton(1))
         {
-            m_movingAgent.FireWeapon();
+            m_movingAgent.pullTrigger();
+        }
+
+        if(Input.GetMouseButtonUp(0) && Input.GetMouseButton(1))
+        {
+            m_movingAgent.releaseTrigger();
         }
     }
 

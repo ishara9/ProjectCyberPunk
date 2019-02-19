@@ -83,12 +83,12 @@ public class AgentMovmentSystem
     /*
      * Current Target direction from the player
      */
-    public Vector3 getTargetDirection()
+    private Vector3 getTargetDirection()
     {
         return (m_target.transform.position - m_characterTransform.position).normalized;
     }
 
-    public Vector3 getTurnPoint()
+    private Vector3 getTurnPoint()
     {
         Vector3 position = m_target.transform.position;
         position.y = m_characterTransform.position.y;

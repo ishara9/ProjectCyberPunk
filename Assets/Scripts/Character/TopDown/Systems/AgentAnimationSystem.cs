@@ -65,6 +65,12 @@ public class AgentAnimationSystem
         return MovingAgent.CharacterMainStates.Armed_not_Aimed;
     }
 
+    public MovingAgent.CharacterMainStates fastEquipCurrentEquipment()
+    {
+        m_animator.SetBool("equip", true);
+        return MovingAgent.CharacterMainStates.Aimed;
+    }
+
     public bool isEquiped()
     {
         return m_animator.GetBool("equip");

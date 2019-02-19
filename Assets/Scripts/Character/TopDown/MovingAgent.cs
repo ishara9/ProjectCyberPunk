@@ -97,35 +97,45 @@ public class MovingAgent : MonoBehaviour
     }
     #endregion
 
-    #region Need_to_refactor
-    // Getters
-    public DamageSystem getDamageSystem()
-    {
-        return m_damageSystem;
-    }
+    #region Commands
 
-    /*
-     * Start Shooting.
-     */
-    public virtual void updateShooting()
-    {
-        if(Input.GetMouseButtonDown(0) && Input.GetMouseButton(1))
-        {
-           if(m_equipmentSystem.isProperlyAimed())
-            {
-                m_equipmentSystem.FireCurrentWeapon();
-            }
-        }
-    }
+    // Fire Weapon Once
+    //public virtual void FireWeapon()
+    //{
+    //    if (m_equipmentSystem.isProperlyAimed() && m_characterState.Equals(CharacterMainStates.Aimed))
+    //    {
+    //        m_equipmentSystem.FireCurrentWeapon();
+    //    }
+    //}
 
-    public virtual void FireWeapon()
+    //// Fire weapon continously.
+    //public virtual void continouseFire()
+    //{
+    //    if (m_equipmentSystem.isProperlyAimed() && m_characterState.Equals(CharacterMainStates.Aimed))
+    //    {
+    //        m_equipmentSystem.continouseFire();
+    //    }
+    //}
+
+    public virtual void pullTrigger()
     {
         if (m_equipmentSystem.isProperlyAimed() && m_characterState.Equals(CharacterMainStates.Aimed))
         {
-            m_equipmentSystem.FireCurrentWeapon();
+            m_equipmentSystem.pullTrigger();
         }
     }
 
+    public virtual void releaseTrigger()
+    {
+        m_equipmentSystem.releaseTrigger();
+    }
+
+    public virtual void weaponFireForAI()
+    {
+        StartCoroutine(fireWeapon());
+    }
+
+    // Aim Current Weapon -
     public virtual void AimWeapon()
     {
         if (m_characterState.Equals(CharacterMainStates.Armed_not_Aimed))
@@ -135,6 +145,7 @@ public class MovingAgent : MonoBehaviour
         }
     }
 
+    // Stop Aiming current Weapon.
     public virtual void StopAiming()
     {
         if (m_characterState.Equals(CharacterMainStates.Aimed))
@@ -144,14 +155,13 @@ public class MovingAgent : MonoBehaviour
         }
     }
 
+    // Move character
     public virtual void moveCharacter(Vector3 movmentDirection)
     {
         m_movmentVector = movmentDirection;
     }
 
-
-
-
+    // Destory Character
     public void DestroyCharacter()
     {
         m_equipmentSystem.DropCurrentWeapon();
@@ -160,45 +170,9 @@ public class MovingAgent : MonoBehaviour
         m_animationSystem.disableAnimationSystem();
     }
 
-
-    public bool isEquiped()
+    public void toggleCrouched()
     {
-        return m_animationSystem.isEquiped() && (m_characterState.Equals(CharacterMainStates.Armed_not_Aimed) || m_characterState.Equals(CharacterMainStates.Aimed));
-    }
-
-    public void EquipPistol()
-    {
-        m_equipmentSystem.Equip();
-    }
-
-    public void UnEquipPistol()
-    {
-        m_equipmentSystem.UnEquip();
-    }
-
-
-    public void switchWeapon()
-    {
-
-    }
-
-    #endregion
-
-    #region depriciated
-    #endregion
-    public AgentAnimationSystem getAnimationSystem()
-    {
-        return m_animationSystem;
-    }
-
-    public void unEquipCurentWeapon()
-    {
-        m_characterState = m_equipmentSystem.unEquipCurrentEquipment();
-    }
-
-    public void equipCurrentWeapon()
-    {
-        m_characterState = m_equipmentSystem.unEquipCurrentEquipment();
+        m_animationSystem.toggleCrouched();
     }
 
     public void togglePrimaryWeapon()
@@ -208,16 +182,99 @@ public class MovingAgent : MonoBehaviour
 
     public void togglepSecondaryWeapon()
     {
-        m_characterState =  m_equipmentSystem.toggleSecondary();
+        m_characterState = m_equipmentSystem.toggleSecondary();
     }
 
-    //public void toggleCurrentWeapon()
-    //{
-    //    m_characterState = m_equipmentSystem.toggleEquipCurrentEquipment();
-    //}
+    #endregion
+
+    #region getters and setters
+
+    public bool isEquiped()
+    {
+        return m_animationSystem.isEquiped() && (m_characterState.Equals(CharacterMainStates.Armed_not_Aimed) || m_characterState.Equals(CharacterMainStates.Aimed));
+    }
 
     public void setTargetPoint(Vector3 position)
     {
         m_target.transform.position = position;
     }
+
+    public DamageSystem getDamageSystem()
+    {
+        return m_damageSystem;
+    }
+    #endregion
+
+    #region Events Handlers
+
+    public void EquipAnimationEvent()
+    {
+        m_equipmentSystem.EquipAnimationEvent();
+    }
+
+    public void UnEquipAnimationEvent()
+    {
+        m_equipmentSystem.UnEquipAnimationEvent();
+    }
+
+    void OnBecameVisible()
+    {
+        AIAgent agent = (AIAgent)m_agentController;
+
+        if (agent != null)
+        {
+            agent.setEnabledFirint(true);
+        }
+    }
+
+    void OnBecameInvisible()
+    {
+        AIAgent agent = (AIAgent)m_agentController;
+
+        if (agent != null)
+        {
+            agent.setEnabledFirint(false);
+        }
+    }
+
+    #endregion
+
+    #region commented Code
+
+    //public void unEquipCurentWeapon()
+    //{
+    //    m_characterState = m_equipmentSystem.unEquipCurrentEquipment();
+    //}
+
+    //public void equipCurrentWeapon()
+    //{
+    //    m_characterState = m_equipmentSystem.unEquipCurrentEquipment();
+    //}
+
+    // Getters
+
+
+    /*
+     * Start Shooting.
+     */
+    //public virtual void updateShooting()
+    //{
+    //    if(Input.GetMouseButtonDown(0) && Input.GetMouseButton(1))
+    //    {
+    //       if(m_equipmentSystem.isProperlyAimed())
+    //        {
+    //            m_equipmentSystem.FireCurrentWeapon();
+    //        }
+    //    }
+    //}
+    #endregion
+
+    #region helperFunctions
+    IEnumerator fireWeapon()
+    {
+        pullTrigger();
+        yield return new WaitForSeconds(0.5f);
+        releaseTrigger();
+    }
+    #endregion
 }

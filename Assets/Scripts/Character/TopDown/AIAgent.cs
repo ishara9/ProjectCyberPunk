@@ -13,9 +13,10 @@ public class AIAgent : AgentController
     // temp
     private MovingAgent player;
     private float moveCounter;
-    private float shootingCounter =0;
+    private float shootingCounter =-1.5f;
     private Vector3 moveDirection;
-    private int shotCount = 10;
+    private int shotCount = 3;
+    private bool enableFiring = false;
 
     public AIAgent()
     {
@@ -53,24 +54,21 @@ public class AIAgent : AgentController
         targetPostion.y = 1.5f;
         m_movingAgent.setTargetPoint(targetPostion);
 
-        if (shootingCounter > 1)
+        if(enableFiring)
         {
-            targetPostion = player.transform.position;
-            targetPostion = new Vector3(targetPostion.x, 1.2f + targetPostion.y, targetPostion.z);
-            m_movingAgent.setTargetPoint(targetPostion);
-
-            m_movingAgent.FireWeapon();
-            shootingCounter = 0;
-            shotCount--;
-            
-            if(shotCount < 0)
+            if (shootingCounter > 1)
             {
-                shootingCounter = 10;
-                shootingCounter = -3;
+                targetPostion = player.transform.position;
+                targetPostion = new Vector3(targetPostion.x, 1.2f + targetPostion.y, targetPostion.z);
+                m_movingAgent.setTargetPoint(targetPostion);
+                m_movingAgent.weaponFireForAI();
+                shootingCounter = -Random.value * 3;
             }
+
+            shootingCounter += Time.deltaTime * 2;
         }
 
-        shootingCounter += Time.deltaTime * 2;
+
 
         moveCounter += Time.deltaTime * 2;
 
@@ -78,6 +76,10 @@ public class AIAgent : AgentController
 
 
     }
+    #endregion
+
+    #region commands
+
     #endregion
 
     #region getters and setters
@@ -108,6 +110,16 @@ public class AIAgent : AgentController
     public void setMovableAgent(MovingAgent agent)
     {
         m_movingAgent = agent;
+    }
+
+    private bool playerisNear()
+    {
+        return Vector3.Distance(m_movingAgent.transform.position,player.transform.position) < 5;
+    }
+
+    public void setEnabledFirint(bool enabled)
+    {
+        enableFiring = enabled;
     }
     #endregion
 }
